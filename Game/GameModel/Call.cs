@@ -22,7 +22,7 @@ namespace Game.GameModel {
                     throw new ArgumentException();
             }
 
-            if (number < 7 || number > 13) {
+            if (number < 7 || number > 14) {
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -44,7 +44,7 @@ namespace Game.GameModel {
                 CallType.RenSol => 10,
                 CallType.Bordlægger => 11,
                 CallType.SuperBordlægger => 12,
-                _ => throw new ArgumentException();
+                _ => throw new ArgumentException()
             };
         }
     }
