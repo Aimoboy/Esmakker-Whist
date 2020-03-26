@@ -47,5 +47,56 @@ namespace Game.GameModel {
                 _ => throw new ArgumentException()
             };
         }
+
+        public static bool operator <(Call left, Call right) {
+            if (left is null || right is null) {
+                return false;
+            }
+
+            if (left.Number > right.Number) {
+                return false;
+            }
+            else if (left.Number < right.Number) {
+                return true;
+            }
+
+            if ((int)left.Type < (int)right.Type) {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool operator >(Call left, Call right) {
+            return right < left;
+        }
+
+        public static bool operator ==(Call left, Call right) {
+            if (left is null && right is null) {
+                return true;
+            }
+
+            if (left is null || right is null) {
+                return false;
+            }
+
+            return left.Type == right.Type && left.Number == right.Number;
+        }
+
+        public static bool operator !=(Call left, Call right) {
+            return !(left == right);
+        }
+
+        public static bool operator <=(Call left, Call right) {
+            return left < right || left == right;
+        }
+
+        public static bool operator >=(Call left, Call right) {
+            return left > right || left == right;
+        }
+
+        public override bool Equals(object obj) {
+            return this == (Call)obj;
+        }
     }
 }
