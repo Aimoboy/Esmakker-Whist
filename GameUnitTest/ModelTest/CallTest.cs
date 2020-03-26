@@ -17,6 +17,16 @@ namespace GameUnitTest.ModelTest {
         }
 
         [Test]
+        public void CreateCallNormalTypeBorderCase() {
+            CallType[] types = { CallType.None, CallType.Vip, CallType.Gode, CallType.Halve, CallType.Sang };
+
+            foreach (CallType type in types) {
+                Assert.Throws<ArgumentOutOfRangeException>(() => new Call(type, 6));
+                Assert.Throws<ArgumentOutOfRangeException>(() => new Call(type, 15));
+            }
+        }
+
+        [Test]
         public void CreateCallSpecialType() {
             CallType[] types = { CallType.Pass, CallType.Sol, CallType.RenSol, CallType.Bordlægger, CallType.SuperBordlægger };
 
