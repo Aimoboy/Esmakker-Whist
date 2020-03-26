@@ -7,6 +7,7 @@ namespace Game.GameModel {
         Spades,
         Clubs,
         Hearts,
-        Diamonds
+        Diamonds,
+        Joker
     }
 }
