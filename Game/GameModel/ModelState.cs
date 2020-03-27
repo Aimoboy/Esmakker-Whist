@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Game.GameModel {
     public enum ModelState {
-        SelectCall
+        SelectCall,
+        SelectPartner,
+        SelectTrump,
+        Play
     }
 }

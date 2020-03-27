@@ -8,6 +8,7 @@ namespace Game.GameModel {
         Clubs,
         Hearts,
         Diamonds,
-        Joker
+        Joker,
+        None
     }
 }
