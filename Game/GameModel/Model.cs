@@ -15,10 +15,10 @@ namespace Game.GameModel {
         public RoundData RoundData { get; set; } = new RoundData();
         public PileData PileData { get; set; } = new PileData();
 
-        public void InitializeAll() {
+        public void InitializeAll(Random rand, int iterations) {
             InitializeVariables();
             InitializePlayers();
-            GenerateAndShuffleCards();
+            GenerateAndShuffleCards(rand, iterations);
             DistributeCards();
         }
 
@@ -40,9 +40,9 @@ namespace Game.GameModel {
             }
         }
 
-        public void GenerateAndShuffleCards() {
+        public void GenerateAndShuffleCards(Random rand, int iterations) {
             Deck.GenerateCards();
-            Deck.Shuffle(10000);
+            Deck.Shuffle(rand, iterations);
         }
 
         public void DistributeCards() {
@@ -321,9 +321,23 @@ namespace Game.GameModel {
 
             PileData.Pile[PileData.CardNumber] = newCard;
             PileData.CardNumber++;
+            PileData.Turn = GetNextPlayer(PileData.Turn);
 
+            Players[playerNum].Hand.Remove(newCard);
+
+            // If pile is full
             if (PileData.CardNumber == Constants.PlayerNumber) {
-                DeterminePileWinner();
+                int winner = DeterminePileWinner();
+                RoundData.PileWins[winner]++;
+                PileData.Reset(winner);
+
+                if (RoundOver()) {
+                    GivePoints(); // Not implemented
+                    CallData.Reset();
+                    RoundData.Reset();
+                    StartPlayer = GetNextPlayer(StartPlayer);
+                    PileData.Reset(StartPlayer);
+                }
             }
 
             return 0;
@@ -339,27 +353,28 @@ namespace Game.GameModel {
             return false;
         }
 
-        private void DeterminePileWinner() {
-            bool containsTrump = false;
-
-            foreach (Card card in PileData.Pile) {
-                if (card.Type == RoundData.Trump) {
-                    containsTrump = true;
+        private int DeterminePileWinner() {
+            // Find trump index, -1 if there is none
+            int containsTrump = -1;
+            for (int i = 0; i < PileData.Pile.Length; i++) {
+                if (PileData.Pile[i].Type == RoundData.Trump) {
+                    containsTrump = i;
                     break;
                 }
             }
 
-            if (!containsTrump && PileData.Pile[0].Type == CardType.Joker) {
-                RoundData.PileWins[StartPlayer]++;
-                return;
+            // If the first card is a joker and there is no trump
+            if (containsTrump == -1 && PileData.Pile[0].Type == CardType.Joker) {
+                return StartPlayer;
             }
 
-            int winner = 0;
+            // Find index of winning card
+            int winner = containsTrump != -1 ? containsTrump : 0;
 
             for (int i = 0; i < PileData.Pile.Length; i++) {
                 Card card = PileData.Pile[i];
 
-                if (containsTrump) {
+                if (containsTrump != -1) {
                     if (card.Type == RoundData.Trump && PileData.Pile[winner].Number < card.Number) {
                         winner = i;
                     }
@@ -371,11 +386,34 @@ namespace Game.GameModel {
                 }
             }
 
-            RoundData.PileWins[winner]++;
-
+            return winner;
         }
 
-        private void DetermineIfRoundOver() {
+        private bool RoundOver() {
+            if (Players[0].Hand.Count == 0) {
+                return true;
+
+            }
+
+            switch (CallData.BestCall.Type) {
+                case CallType.Sol:
+                case CallType.Bordlægger:
+                    if (Players[CallData.CallWinner].Hand.Count > 1) {
+                        return true;
+                    }
+                    break;
+                case CallType.RenSol:
+                case CallType.SuperBordlægger:
+                    if (Players[CallData.CallWinner].Hand.Count > 0) {
+                        return true;
+                    }
+                    break;
+            }
+
+            return false;
+        }
+
+        private void GivePoints() {
 
         }
     }

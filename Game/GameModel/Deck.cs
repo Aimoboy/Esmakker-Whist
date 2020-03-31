@@ -27,9 +27,7 @@ namespace Game.GameModel {
         /// Shuffle the cards
         /// </summary>
         /// <param name="iterations">The number of times to switch two random cards</param>
-        public void Shuffle(int iterations) {
-            Random rand = new Random();
-
+        public void Shuffle(Random rand, int iterations) {
             for (int i = 0; i < iterations; i++) {
                 int i1 = rand.Next(Cards.Length);
                 int i2 = rand.Next(Cards.Length);

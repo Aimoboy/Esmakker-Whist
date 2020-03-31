@@ -12,7 +12,7 @@ namespace GameUnitTest.ModelTest {
         [SetUp]
         public void SetUp() {
             model = new Model();
-            model.InitializeAll();
+            model.InitializeAll(new Random(0), 10000);
         }
 
         [Test]

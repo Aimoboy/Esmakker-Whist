@@ -29,7 +29,7 @@ namespace GameUnitTest.ModelTest {
 
         [Test]
         public void TestShuffleOneOfEach() {
-            deck.Shuffle(100);
+            deck.Shuffle(new Random(), 100);
             Assert.IsTrue(OneOfEach());
         }
 
